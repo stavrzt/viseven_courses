@@ -1,0 +1,48 @@
+.wrapper {
+  width: 1024px;
+  margin: 0 auto;
+
+  .gallery_wrap {
+
+    h2{
+      margin: 0;
+    }
+
+
+    background-color: lightskyblue;
+    padding:20px 25px 0 25px;
+    height: 768px;
+
+    .gallery {
+      margin-top: 30px;
+      overflow-y: hidden;
+      overflow-x: auto;
+      position: relative;
+      height: calc(100% - 70px);
+
+      .img {
+        height: 200px;
+        width: 236px;
+        background: no-repeat center rgba(0, 0, 0, .1);
+        background-size: cover;
+        float: left;
+        position: absolute;
+      }
+
+      .file_input {
+        background-color: #fff;
+        overflow: hidden;
+      }
+
+      .img:nth-child(9n-8),
+      .img:nth-child(9n-4) {
+        width: 482px;
+      }
+
+      .img:nth-child(9n-3) {
+        height: 410px;
+      }
+
+    }
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "viseven",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/stavrzt/viseven_courses.git"
+  },
+  "author": "Yaroslav Mudryi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/stavrzt/viseven_courses/issues"
+  },
+  "homepage": "https://github.com/stavrzt/viseven_courses#readme"
+}
