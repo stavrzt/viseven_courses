@@ -9,8 +9,14 @@ jQuery(function ($, undefined) {
 
 
     function getScreenCount(imageCount){
-        imageCount > 9 ? screenCount = (imageCount - ((imageCount) % 9)) / 9 + 1 : screenCount = 1;
-        return screenCount;
+
+        screenCount = Math.floor((imageCount - (imageCount % 9)) / 9);
+
+        // if(imageCount % 9 == 0 && imageCount != 9){
+        //     screenCount = screenCount - 1;
+        // }
+
+        return screenCount
     }
 
     var checkAvailabilityUrls = function () {
@@ -61,6 +67,9 @@ jQuery(function ($, undefined) {
                 var imageUrlsLength = 0;
                 newImage ? (imagesPositions = getImagesPositions(false)) : imageUrlsLength = imageUrls.length;
 
+                // console.log(imageUrlsLength + ' lol');
+                // console.log(imagesPositions);
+
                 outputDataHtml = '<div class=\"img file_input\" style=\"' +
                     'top:' + imagesPositions[imageUrlsLength]['top'] + 'px;' +
                     'left:' + imagesPositions[imageUrlsLength]['left'] + 'px;' +
@@ -77,28 +86,33 @@ jQuery(function ($, undefined) {
 
         if (isDefaultLoad) {
             var counter = 0;
+
             screenCount = getScreenCount(imageUrls.length);
 
             for (var i = 0; i <= screenCount; i++) {
                 for (var j = 0; j < 9 && counter <= imageUrls.length; j++) {
+                    // console.log(imagesPositionsConst['top'][j] + ' jjjjjjjjjjjj');
+                    // console.log(imagesPositionsConst['left'][j]);
+
                     imagesPositions[counter++] = {
                         'top': imagesPositionsConst['top'][j],
-                        'left': i * 1024 + imagesPositionsConst['left'][j]
+                        'left': (i * 1024) + imagesPositionsConst['left'][j]
                     }
                 }
             }
         } else {
             imageUrls = $.parseJSON(localStorage.getItem('imageUrls'));
-
-            screenCount = getScreenCount(imageUrls.length);
-            var newBlockPosition = (imageUrls.length + 1)%9;
+            //console.log('imageUrls.length = ' + imageUrls.length);
+            //console.log(imageUrls);
+            screenCount = getScreenCount(imageUrls.length + 1);
+            //console.log('screenCount = ' + screenCount);
+            var newBlockPosition = (imageUrls.length+1)%9;
+            //console.log('newBlockPosition = ' + newBlockPosition);
 
             imagesPositions.push({
                 'top': imagesPositionsConst['top'][newBlockPosition],
-                'left': screenCount * 1024 + imagesPositionsConst['left'][newBlockPosition]
+                'left': (screenCount * 1024) + imagesPositionsConst['left'][newBlockPosition]
             });
-
-            console.log(imagesPositions);
         }
         return imagesPositions;
     }
@@ -116,14 +130,10 @@ jQuery(function ($, undefined) {
         $(this).parent().removeClass('file_input');
         $(this).remove();
 
-
-        // var coordinates = getImagesPositions(false);
-
-
         $('.gallery').append(getHtmlTemplate('fileDiv', true));
-        $('#addImage').on('change', previewFile);
         imageUrls.push(filename);
         localStorage.setItem("imageUrls", JSON.stringify(imageUrls));
+        $('#addImage').on('change', previewFile);
     }
 
 
