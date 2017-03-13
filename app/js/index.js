@@ -1,51 +1,64 @@
 jQuery(function ($, undefined) {
 
-    var imageUrls = $.parseJSON(localStorage.getItem('imageUrls'));
+    var imgsData = $.parseJSON(localStorage.getItem('imgsData'));
     var pathToImages = 'app/imgs/';
+    var imgObjectData = '';
     var imagesPositionsConst = {
         top: [0, 210, 420, 210, 420, 0, 0, 210, 420],
         left: [0, 0, 0, 246, 246, 492, 738, 738, 738]
     };
 
-
     function getScreenCount(imageCount){
-
         screenCount = Math.floor((imageCount - (imageCount % 9)) / 9);
-
-        // if(imageCount % 9 == 0 && imageCount != 9){
-        //     screenCount = screenCount - 1;
-        // }
-
         return screenCount
     }
 
     var checkAvailabilityUrls = function () {
-        imageUrls ? renderImages(null) : addDefaultImages();
+        imgsData ? renderImages(null) : addDefaultImages();
     };
 
     checkAvailabilityUrls();
 
+    function getNewImgObject(imageName) {
+        return {
+            'imageUrl': imageName,
+            'like': 0,
+            'dislike': 0,
+            'comments': []
+        }
+    }
+
     function addDefaultImages() {
 
         var initial_image_count = 8;
-        imageUrls = Array();
+        imgsData = Array();
 
-        for (var i = 1; i <= initial_image_count; i++) {
-            imageUrls[i - 1] = 'slide' + i + '.jpg';
+        for (var i = 0; i < initial_image_count; i++) {
+            imgsData[i] = getNewImgObject('slide' + (i+1) + '.jpg');
         }
 
-        localStorage.setItem("imageUrls", JSON.stringify(imageUrls));
+        localStorage.setItem("imgsData", JSON.stringify(imgsData));
         renderImages();
     }
 
     function renderImages() {
-        if (!imageUrls) {
-            imageUrls = $.parseJSON(imageUrls);
+        if (!imgsData) {
+            imgsData = $.parseJSON(imgsData);
         } else {
-            imageUrls = $.parseJSON(localStorage.getItem("imageUrls"));
+            imgsData = $.parseJSON(localStorage.getItem("imgsData"));
         }
 
         $('.gallery').append(getHtmlTemplate('imageDivs', false) + getHtmlTemplate('fileDiv', false));
+    }
+
+    function getCommentsBlockHtml() {
+
+        return '' +
+            '<div class="img_info">' +
+                '<div class="comments"><p></p></div>' +
+                '<div class="likes"><p></p></div>' +
+                '<div class="dislikes"><p></p></div>' +
+            '</div>';
     }
 
     function getHtmlTemplate(template, newImage){
@@ -54,26 +67,36 @@ jQuery(function ($, undefined) {
 
         switch (template) {
             case 'imageDivs':
-                for (var i = 0; i < imageUrls.length; i++) {
+                for (var i = 0; i < imgsData.length; i++) {
                     outputDataHtml += '<div class=\"img\" style=\"' +
-                        'background-image:url(\'' + pathToImages + imageUrls[i] + '\');' +
+                        'background-image:url(\'' + pathToImages + imgsData[i]["imageUrl"] + '\');' +
                         'top:' + imagesPositions[i]['top'] + 'px;' +
                         'left:' + imagesPositions[i]['left'] + 'px;' +
-                        '\"></div>';
+                        '\" data-img-id= \"' + i + '\">' + getCommentsBlockHtml() + '</div>';
                 }
                 break;
 
             case 'fileDiv':
-                var imageUrlsLength = 0;
-                newImage ? (imagesPositions = getImagesPositions(false)) : imageUrlsLength = imageUrls.length;
-
-                // console.log(imageUrlsLength + ' lol');
-                // console.log(imagesPositions);
+                var imgsDataLength = 0;
+                newImage ? (imagesPositions = getImagesPositions(false)) : imgsDataLength = imgsData.length;
 
                 outputDataHtml = '<div class=\"img file_input\" style=\"' +
-                    'top:' + imagesPositions[imageUrlsLength]['top'] + 'px;' +
-                    'left:' + imagesPositions[imageUrlsLength]['left'] + 'px;' +
+                    'top:' + imagesPositions[imgsDataLength]['top'] + 'px;' +
+                    'left:' + imagesPositions[imgsDataLength]['left'] + 'px;' +
                     '\"><input  type=\"file\" accept="image/*" id=\"addImage\"></div>';
+                break;
+
+            case 'popupComment':
+                for(var i=0; i<imgObjectData['comments'].length; i++){
+                    outputDataHtml += '' +
+                        '<div class="single_comment">' +
+                            '<div>' +
+                                '<p class="author">' + imgObjectData['comments'][i]['author'] + '</p>' +
+                                '<p class="date">' + imgObjectData['comments'][i]['time'] + '</p>' +
+                            '</div>' +
+                            '<p class="text">' + imgObjectData['comments'][i]['text'] + '</p>' +
+                        '</div>';
+                }
                 break;
         }
         return outputDataHtml;
@@ -87,13 +110,10 @@ jQuery(function ($, undefined) {
         if (isDefaultLoad) {
             var counter = 0;
 
-            screenCount = getScreenCount(imageUrls.length);
+            screenCount = getScreenCount(imgsData.length);
 
             for (var i = 0; i <= screenCount; i++) {
-                for (var j = 0; j < 9 && counter <= imageUrls.length; j++) {
-                    // console.log(imagesPositionsConst['top'][j] + ' jjjjjjjjjjjj');
-                    // console.log(imagesPositionsConst['left'][j]);
-
+                for (var j = 0; j < 9 && counter <= imgsData.length; j++) {
                     imagesPositions[counter++] = {
                         'top': imagesPositionsConst['top'][j],
                         'left': (i * 1024) + imagesPositionsConst['left'][j]
@@ -101,13 +121,9 @@ jQuery(function ($, undefined) {
                 }
             }
         } else {
-            imageUrls = $.parseJSON(localStorage.getItem('imageUrls'));
-            //console.log('imageUrls.length = ' + imageUrls.length);
-            //console.log(imageUrls);
-            screenCount = getScreenCount(imageUrls.length + 1);
-            //console.log('screenCount = ' + screenCount);
-            var newBlockPosition = (imageUrls.length+1)%9;
-            //console.log('newBlockPosition = ' + newBlockPosition);
+            imgsData = $.parseJSON(localStorage.getItem('imgsData'));
+            screenCount = getScreenCount(imgsData.length + 1);
+            var newBlockPosition = (imgsData.length+1)%9;
 
             imagesPositions.push({
                 'top': imagesPositionsConst['top'][newBlockPosition],
@@ -117,7 +133,6 @@ jQuery(function ($, undefined) {
         return imagesPositions;
     }
 
-
     $('#addImage').on('change', previewFile);
 
     function previewFile() {
@@ -126,17 +141,107 @@ jQuery(function ($, undefined) {
             var filename = $(this).val().split('\\').pop();
         } else { return; }
 
-        $(this).parent().css("background-image", 'url(\'' + pathToImages + filename + "\')");
-        $(this).parent().removeClass('file_input');
+        var parent = $(this).parent();
+        $(this).parent()
+            .css("background-image", 'url(\'' + pathToImages + filename + "\')")
+            .removeClass('file_input')
+            .append(getCommentsBlockHtml())
+            .data('imgId', ($.parseJSON(localStorage.getItem('imgsData')).length));
         $(this).remove();
 
         $('.gallery').append(getHtmlTemplate('fileDiv', true));
-        imageUrls.push(filename);
-        localStorage.setItem("imageUrls", JSON.stringify(imageUrls));
+
+        imgsData.push(getNewImgObject(filename));
+        localStorage.setItem("imgsData", JSON.stringify(imgsData));
         $('#addImage').on('change', previewFile);
     }
 
+    $('.img').on({
+        mouseenter: function () {
+            if($(this).hasClass('file_input')){return;}
 
+            var allImgsData = $.parseJSON(localStorage.getItem('imgsData'));
+            var imgId = $(this).data()['imgId'];
+
+            $(this).find('.comments p').text(allImgsData[imgId]['comments'].length);
+            $(this).find('.likes p').text(allImgsData[imgId]['like']);
+            $(this).find('.dislikes p').text(allImgsData[imgId]['dislike']);
+        },
+        click:function (imgObject) {
+            if($(this).hasClass('file_input')){return;}
+
+            var imgId = $(this).data()['imgId'];
+
+            imgObjectData = $.parseJSON(localStorage.getItem('imgsData'))[imgId];
+
+            $("#img_popup")
+                .data('imgId', $(this).data()['imgId'])
+                .dialog( "open" );
+
+            $("#img_popup").find('.imageBox').css({'background-image': 'url(' + pathToImages + imgObjectData['imageUrl'] + ')'});
+            $("#img_popup").find('.likes p').text(imgObjectData['like']);
+            $("#img_popup").find('.dislikes p').text(imgObjectData['dislike']);
+            $("#img_popup").find('h3').text('Comments: ' + imgObjectData['comments'].length);
+
+            $("#img_popup").find('.comments').append(getHtmlTemplate('popupComment'));
+        }
+    })
+
+    $('#img_popup').dialog({
+        autoOpen: false,
+        resizable: false,
+        width: 812,
+        height: 595,
+        modal: true,
+        position: {my: "center", at: "center", of: ".gallery"},
+        appendTo: $('.gallery')
+    });
+
+    $('.dialog-titlebar-close').on({
+        click: function () {
+            $("#img_popup").dialog("close");
+        }
+    });
+
+    $('#newComment div i').on({
+        click: function () {
+            $("#newComment").submit();
+        }
+    });
+
+    $( "#newComment" ).submit(function(event) {
+
+        var commentAuthor = $('#newComment').find('input[type="text"]').val();
+        var commentText = $('#newComment').find('input[type="textarea"]').val();
+
+        if((commentAuthor != 0) && (commentText != 0)) {
+            //console.log($('#img_popup').data()['imgId']);
+
+            imgsData = $.parseJSON(localStorage.getItem('imgsData'));
+
+            var commentsList = imgsData[$('#img_popup').data()['imgId']]['comments'];
+
+            commentsList.push({
+                author: commentAuthor,
+                text: commentText,
+                time: $.now()
+            });
+
+            localStorage.setItem("imgsData", JSON.stringify(imgsData));
+
+
+
+            $('#newComment').find('input[type="text"]').val('');
+            $('#newComment').find('input[type="textarea"]').val('');
+
+
+        }else{
+            alert('Add nickname and comment text!');
+        }
+
+        event.preventDefault();
+
+    });
 
 
 })

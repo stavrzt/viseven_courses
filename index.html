@@ -5,9 +5,16 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="app/css/index.css">
+
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+    <script src="https://use.fontawesome.com/44b0b8cac3.js"></script>
+
+    <link rel="stylesheet" href="app/css/index.css">
     <script src="app/js/index.js"></script>
     <title>Document</title>
 
@@ -15,12 +22,39 @@
 <body>
 
     <div class="wrapper">
-
         <div class="gallery_wrap">
-            <h2>VISEVEN</h2>
-            <div class="gallery">
-
+            <h2>Welcome to Viseven <span>imagestock</span></h2>
+            <div class="gallery_overlay">
+                <div class="gallery"></div>
             </div>
+        </div>
+    </div>
+
+    <div id="img_popup">
+
+            <i class="fa fa-times dialog-titlebar-close"></i>
+
+        <div class="popup_img">
+            <div class="imageBox">
+                <div class="social_icons">
+                    <div class="likes"><p>0</p></div>
+                    <div class="dislikes"><p>0</p></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="popup_comments">
+            <h3>Comments: 0</h3>
+
+            <div class="comments"></div>
+
+            <form id="newComment" action="">
+                <input type="text" placeholder="Type your nickname here..." required>
+                <div>
+                    <input type="textarea" placeholder="Write your comment here..." required>
+                    <i class="fa fa-envelope" aria-hidden="true"></i>
+                </div>
+            </form>
         </div>
 
     </div>
