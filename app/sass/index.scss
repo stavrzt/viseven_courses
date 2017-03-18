@@ -6,7 +6,11 @@ $scroll_bckg: #cccccc;
 
 @font-face {
   font-family: MyriadPro-Regular;
-  src: url("/app/fonts/MyriadPro-Regular.otf") format("opentype");
+  src: url("../fonts/MyriadPro-Regular.otf") format("opentype");
+}
+
+body{
+  font-family: Myriad Pro Regular;
 }
 
 .wrapper {
@@ -68,11 +72,6 @@ $scroll_bckg: #cccccc;
     }
   }
 
-  .file_input {
-    background-color: #fff;
-    overflow: hidden;
-  }
-
   .img:nth-child(9n-8),
   .img:nth-child(9n-4) {
     width: 482px;
@@ -81,6 +80,12 @@ $scroll_bckg: #cccccc;
   .img:nth-child(9n-3) {
     height: 410px;
   }
+
+  .file_input {
+    background-color: #fff;
+    overflow: hidden;
+  }
+
 }
 
 .img_info {
@@ -96,7 +101,7 @@ $scroll_bckg: #cccccc;
 
 .img_info .comments {
   float: left;
-  background: url("/app/imgs/change/comment-icon.png") no-repeat center;
+  background: url("../imgs/comment-icon.png") no-repeat center;
 }
 
 .social_icons{
@@ -109,13 +114,13 @@ $scroll_bckg: #cccccc;
 
 .img_info, .social_icons {
   .likes {
-    background: url("/app/imgs/change/like-icon.png") no-repeat center;
+    background: url("../imgs/like-icon.png") no-repeat center;
   }
 }
 
 .img_info, .social_icons {
   .dislikes {
-    background: url("/app/imgs/change/dislike-icon.png") no-repeat center;
+    background: url("../imgs/dislike-icon.png") no-repeat center;
   }
 }
 
@@ -312,6 +317,10 @@ $scroll_bckg: #cccccc;
   border-radius: 10px;
 }
 
+#newComment input{
+  padding-left: 6px;
+}
+
 .ui-dialog .dialog-titlebar-close {
   position: absolute;
   right: 0;
@@ -323,6 +332,33 @@ $scroll_bckg: #cccccc;
   &:hover{
     cursor: pointer;
   }
+}
+
+#addImage{
+  display: none;
+}
+
+.add_image{
+  width: 60px;
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+    i{
+      padding: 15px;
+      background-color: $blue;
+      border-radius: 26px;
+      font-size: 26px;
+      line-height: 20px;
+      color: white;
+    }
+
+    p{
+      color: $grey;
+      margin-bottom: 0;
+    }
 }
 
 ::-webkit-input-placeholder {
